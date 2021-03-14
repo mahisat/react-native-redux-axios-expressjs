@@ -32,6 +32,7 @@ export const listQuotes = () => {
     dispatch(isLoading('isListQuoteLoading', true));
     try {
       const response = await axios.get(`${baseUrl}/api/listQuotes`);
+      console.log('respojse', response);
       if (response.status === 200) {
         dispatch(isLoading('isListQuoteLoading', false));
 
@@ -41,11 +42,19 @@ export const listQuotes = () => {
         });
       }
     } catch (error) {
-      console.log('error', error);
       dispatch(isLoading('isListQuoteLoading', false));
-      if (error.response.data.message) {
+      // console.log('error', error);
+      if (error.response) {
         MyToast(error.response.data.message);
-      } else if (error.message) {
+      } else if (error.request) {
+        // console.log('error.request', error.request);
+        // The request was made but no response was received
+        // Error details are stored in error.reqeust
+        if (error.request._response) {
+          MyToast(error.request._response);
+        }
+      } else {
+        // Some other errors
         MyToast(error.message);
       }
     }
@@ -80,9 +89,14 @@ export const addQuote = ({quote, author, navigation}) => {
     } catch (error) {
       dispatch(isLoading('isSubmitQuoteLoading', false));
 
-      if (error.response.data.message) {
+      // console.log('error', error);
+      if (error.response) {
         MyToast(error.response.data.message);
-      } else if (error.message) {
+      } else if (error.request) {
+        if (error.request._response) {
+          MyToast(error.request._response);
+        }
+      } else {
         MyToast(error.message);
       }
     }
@@ -120,9 +134,14 @@ export const updateQuote = ({author, quote, id, navigation}) => {
     } catch (error) {
       dispatch(isLoading('isSubmitQuoteLoading', false));
 
-      if (error.response.data.message) {
+      // console.log('error', error);
+      if (error.response) {
         MyToast(error.response.data.message);
-      } else if (error.message) {
+      } else if (error.request) {
+        if (error.request._response) {
+          MyToast(error.request._response);
+        }
+      } else {
         MyToast(error.message);
       }
     }
@@ -153,9 +172,14 @@ export const deleteQuote = ({id}) => {
         });
       }
     } catch (error) {
-      if (error.response.data.message) {
+      // console.log('error', error);
+      if (error.response) {
         MyToast(error.response.data.message);
-      } else if (error.message) {
+      } else if (error.request) {
+        if (error.request._response) {
+          MyToast(error.request._response);
+        }
+      } else {
         MyToast(error.message);
       }
     }

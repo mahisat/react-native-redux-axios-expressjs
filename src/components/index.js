@@ -1,3 +1,4 @@
 import MyHeader from './MyHeader';
 import MyToast from './MyToast';
-export {MyHeader, MyToast};
+import InternetStatus from './InternetStatus';
+export {MyHeader, MyToast, InternetStatus};
