@@ -6,7 +6,6 @@ import {
   LIST_QUOTES,
   LOADING,
 } from '../actions/types';
-import lodash from 'lodash';
 
 const INITIAL_STATE = {
   quotes: [],
@@ -23,41 +22,39 @@ export default (state = INITIAL_STATE, action) => {
     case LIST_QUOTES:
       return {...state, quotes: action.data};
     case ADD_QUOTE:
-      let quote = action.data;
+      let {quote} = action.data;
 
-      //clone the current state
-      let clone = lodash.cloneDeep(state.quotes);
+      const quotes = [quote, ...state.quotes]; //add the new quote to the top
 
-      clone.unshift(quote); //add the new quote to the top
-
-      return {...state, quotes: clone};
-    case UPDATE_QUOTE: {
-      let quote = action.data;
-
-      //clone the current state
-      let clone = lodash.cloneDeep(state.quotes);
+      return {...state, quotes: quotes};
+     case UPDATE_QUOTE: {
+      let {quote} = action.data;
 
       //check if quote already exist
-      const index = clone.findIndex((obj) => obj.id === quote.id);
+      const quoteIndex = state.quotes.findIndex((obj) => obj.id === quote.id);
 
-      //if the quote is in the array, replace the quote
-      if (index !== -1) clone[index] = quote;
-
-      return {...state, quotes: clone};
+      return {
+        ...state,
+        quotes: [
+          ...state.quotes.slice(0, quoteIndex),
+          quote,
+          ...state.quotes.slice(quoteIndex + 1),
+        ],
+      };
     }
-    case DELETE_QUOTE: {
+ case DELETE_QUOTE: {
       let {id} = action.data;
-      //clone the current state
-      let clone = lodash.cloneDeep(state.quotes);
 
-      //check if quote already exist
-      const index = clone.findIndex((obj) => obj.id === id);
+      const quoteIndex = state.quotes.findIndex((obj) => obj.id === id);
 
-      //if the quote is in the array, remove the quote
-      if (index !== -1) clone.splice(index, 1);
+      const quotes = [
+        ...state.quotes.slice(0, quoteIndex),
+        ...state.quotes.slice(quoteIndex + 1),
+      ];
 
-      return {...state, quotes: clone};
+      return {...state, quotes: quotes};
     }
+
     default:
       return state;
   }
